@@ -1,0 +1,41 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Real-Time Data Gathering</title>
+</head>
+<body>
+  <h1>Real-Time Data</h1>
+  <script src="https://cdn.socket.io/4.7.3/socket.io.min.js"></script>
+  <script>
+    const socket = io();
+
+    socket.on('accelerometer', (data) => {
+      console.log('Accelerometer Data:', data);
+
+      // Send data to the server for further processing
+      fetch('/process-data', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data),
+      })
+      .then(response => {
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
+        return response.text();
+      })
+      .then(data => {
+        console.log('Server response:', data);
+      })
+      .catch(error => {
+        console.error('Error:', error);
+      });
+    });
+  </script>
+</body>
+</html>
